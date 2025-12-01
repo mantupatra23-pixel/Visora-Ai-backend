@@ -45,6 +45,7 @@ from routes.orchestrator import router as orchestrator_router
 from routes.physics import router as physics_router
 from routes.prop_inject import router as prop_router
 from routes.voice2anim import router as v2a_router
+from routes.admin import router as admin_router
 
 # Load environment variables from .env
 load_dotenv()
@@ -103,6 +104,7 @@ app.include_router(orchestrator_router, prefix="/orchestrator")
 app.include_router(physics_router, prefix="/physics")
 app.include_router(prop_router, prefix="/props")
 app.include_router(v2a_router, prefix="/v2a")
+app.include_router(admin_router)
 
 # Optional: run with python app.py
 if __name__ == "__main__":

@@ -1,0 +1,5 @@
+{
+  "filmic": {"fov": 35, "aperture": 2.8, "motion_blur": 0.1, "shake": {"amount": 0.02, "freq": 8}},
+  "documentary": {"fov": 24, "aperture": 5.6, "motion_blur": 0.02, "shake": {"amount": 0.01, "freq": 4}},
+  "tight_close": {"fov": 85, "aperture": 1.8, "motion_blur": 0.08, "shake": {"amount": 0.015, "freq": 10}}
+}
