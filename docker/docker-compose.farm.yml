@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:7
+    restart: unless-stopped
+
+  farm_manager:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.app  # your API app image
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./:/app
+    depends_on:
+      - redis
+
+  farm_worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.worker  # generic worker image with Blender/ffmpeg if needed
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    volumes:
+      - ./:/app
+    depends_on:
+      - redis
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 4G
