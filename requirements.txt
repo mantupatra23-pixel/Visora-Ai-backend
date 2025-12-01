@@ -72,8 +72,7 @@ python-dotenv==1.0.1
 uuid==1.30
 datetime==5.5
 pyyaml==6.0.2
-tqdm==4.66.5
-
+tqdm==4.71.0
 
 #################################
 # 🔐 Security
