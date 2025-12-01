@@ -35,6 +35,14 @@ from routes.face_reenact import router as facere_router
 from routes.dialogue_timing import router as dialog_timing_router
 from routes.personality import router as personality_router
 from routes.vfx import router as vfx_router
+from routes.mocap import router as mocap_router
+from routes.scene_planner import router as scene_planner_router
+from routes.storyboard import router as storyboard_router
+from routes.variants import router as variants_router
+from routes.continuity import router as continuity_router
+from routes.edl import router as edl_router
+from routes.orchestrator import router as orchestrator_router
+from routes.physics import router as physics_router
 
 # Load environment variables from .env
 load_dotenv()
@@ -83,6 +91,14 @@ app.include_router(facere_router, prefix="/face")
 app.include_router(dialog_timing_router, prefix="/timing")
 app.include_router(personality_router, prefix="/persona")
 app.include_router(vfx_router, prefix="/vfx")
+app.include_router(mocap_router, prefix="/mocap")
+app.include_router(scene_planner_router, prefix="/planner")
+app.include_router(storyboard_router, prefix="/storyboard")
+app.include_router(variants_router, prefix="/variants")
+app.include_router(continuity_router, prefix="/continuity")
+app.include_router(edl_router, prefix="/edl")
+app.include_router(orchestrator_router, prefix="/orchestrator")
+app.include_router(physics_router, prefix="/physics")
 
 # Optional: run with python app.py
 if __name__ == "__main__":

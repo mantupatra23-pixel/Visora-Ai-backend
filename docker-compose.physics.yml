@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  redis:
+    image: redis:7
+    restart: unless-stopped
+
+  physics_worker:
+    build:
+      context: .
+      dockerfile: docker/physics-worker.Dockerfile
+    runtime: nvidia
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - BLENDER_BIN=/opt/blender-3.5.1-linux-x64/blender
+    volumes:
+      - ./:/app
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    depends_on:
+      - redis
