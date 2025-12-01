@@ -1,0 +1,11 @@
+# identity.cube
+LUT_3D_SIZE 2
+# simple tiny identity LUT (2^3 entries)
+0 0 0
+0 0 1
+0 1 0
+0 1 1
+1 0 0
+1 0 1
+1 1 0
+1 1 1

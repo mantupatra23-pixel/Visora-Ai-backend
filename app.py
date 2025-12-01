@@ -26,6 +26,15 @@ from routes.multichar_anim import router as multichar_anim_router
 from routes.dialogue_split import router as dialogue_split_router
 from routes.multichar_enhanced import router as multichar_enhanced_router
 from routes.queue import router as queue_router
+from routes.emotion import router as emotion_router
+from routes.camera import router as camera_router
+from routes.soundfx import router as soundfx_router
+from routes.subtitle import router as subtitle_router
+from routes.voiceclone import router as voiceclone_router
+from routes.face_reenact import router as facere_router
+from routes.dialogue_timing import router as dialog_timing_router
+from routes.personality import router as personality_router
+from routes.vfx import router as vfx_router
 
 # Load environment variables from .env
 load_dotenv()
@@ -65,6 +74,15 @@ app.include_router(multichar_anim_router, prefix="/anim")
 app.include_router(dialogue_split_router, prefix="/dialogue")
 app.include_router(multichar_enhanced_router, prefix="/multichar")
 app.include_router(queue_router, prefix="/queue")
+app.include_router(emotion_router, prefix="/emotion")
+app.include_router(camera_router, prefix="/camera")
+app.include_router(soundfx_router, prefix="/soundfx")
+app.include_router(subtitle_router, prefix="/subtitle")
+app.include_router(voiceclone_router, prefix="/voice")
+app.include_router(facere_router, prefix="/face")
+app.include_router(dialog_timing_router, prefix="/timing")
+app.include_router(personality_router, prefix="/persona")
+app.include_router(vfx_router, prefix="/vfx")
 
 # Optional: run with python app.py
 if __name__ == "__main__":

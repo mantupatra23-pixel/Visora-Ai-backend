@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+
+  gpu_worker:
+    build:
+      context: .
+      dockerfile: docker/worker-gpu.Dockerfile
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - RTVC_PATH=/app/rtvc
+      - WAV2LIP_PATH=/app/wav2lip
+      - SADTALKER_PATH=/app/sadtalker
+    volumes:
+      - ./:/app
+    depends_on:
+      - redis
+
+  flower:
+    image: mher/flower:1.0.0
+    ports:
+      - "5555:5555"
+    command: flower --broker=redis://redis:6379/0
+    depends_on:
+      - redis
+
+# usage: docker compose -f docker-compose.gpu.yml up --build
