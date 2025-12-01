@@ -1,2 +1,115 @@
-Flask
-requests
+#################################
+# ⚡ CORE Frameworks
+#################################
+
+fastapi==0.115.0
+uvicorn==0.30.6
+Flask==3.0.3
+werkzeug==3.0.3
+itsdangerous==2.2.0
+click==8.1.7
+gunicorn==21.0.1
+flask-cors==3.0.10
+celery==5.5.0
+
+
+#################################
+# 🗄 Database + ORM
+#################################
+
+SQLAlchemy==2.0.25
+Flask-SQLAlchemy==3.1.1
+firebase-admin==6.5.0
+
+
+#################################
+# 🧠 AI + Voice + NLP
+#################################
+
+gTTS==2.5.1
+textblob==0.17.1
+SpeechRecognition==3.10.1
+pydub==0.25.1
+typing_extensions==4.12.2
+librosa==0.10.2
+soundfile==0.12.1
+scipy==1.13.1
+
+
+#################################
+# 🎥 Video + Image Rendering
+#################################
+
+moviepy==1.0.3
+imageio==2.34.0
+imageio-ffmpeg==0.5.1
+opencv-python-headless==4.10.0.84
+Pillow==10.3.0
+numpy==1.26.4
+
+
+#################################
+# 🚀 Background Tasks + Cache
+#################################
+
+redis==5.0.4
+rq==1.16.2
+
+
+#################################
+# ☁️ AWS (FILE STORAGE ONLY)
+#################################
+
+boto3==1.34.19
+
+
+#################################
+# 🧰 Utility + Time
+#################################
+
+python-dotenv==1.0.1
+uuid==1.30
+datetime==5.5
+pyyaml==6.0.2
+tqdm==4.66.5
+
+
+#################################
+# 🔐 Security
+#################################
+
+PyJWT==2.8.0
+cryptography==43.0.1
+
+
+#################################
+# 🛠 Compatibility
+#################################
+
+setuptools==75.2.0
+packaging==24.1
+
+
+#################################
+# 🔥 AI Models (CPU Torch)
+#################################
+
+torch==2.3.1+cpu
+torchvision==0.18.1+cpu
+torchaudio==2.3.1+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+
+#################################
+# 🗣 Text-to-Speech + Template
+#################################
+
+python-multipart==0.0.9
+
+
+#################################
+# ✨ Transformers (Local Text Gen)
+#################################
+
+transformers==4.37.2
+huggingface-hub==0.20.3
