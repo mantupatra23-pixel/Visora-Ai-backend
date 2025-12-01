@@ -1,24 +1,49 @@
 # routes/emotion.py
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from services.emotion_engine import EmotionEngine
+from typing import Any, Dict
+
+from services.emotion_classifier import classify_audio, classify_image
 
 router = APIRouter()
-# set use_hf_model=True only if transformers & model installed
-engine = EmotionEngine(use_hf_model=False)
 
-class EmotionReq(BaseModel):
-    text: str
-    use_model: bool | None = False
 
-@router.post("/detect")
-def detect(req: EmotionReq):
+class AudioReq(BaseModel):
+    audio_path: str
+
+
+class ImageReq(BaseModel):
+    image_path: str
+
+
+@router.post("/audio")
+def audio(req: AudioReq) -> Dict[str, Any]:
+    """
+    Classify emotion from an audio file path.
+    Returns JSON: {"ok": True, "result": <classifier result>}
+    """
     try:
-        # optionally re-init engine with model (cheap)
-        if req.use_model and not engine.use_hf:
-            # you can reinitialize or return message; for now we return warning
-            return {"ok": False, "msg": "HF model not enabled on this instance. Set use_hf_model=True in service init if you installed transformers & a model."}
-        res = engine.analyze_and_map(req.text)
+        res = classify_audio(req.audio_path)
         return {"ok": True, "result": res}
+    except ValueError as e:
+        # client error (e.g. file not found / invalid file)
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        # unexpected server error
+        raise HTTPException(status_code=500, detail=f"Audio classification failed: {e}")
+
+
+@router.post("/image")
+def image(req: ImageReq) -> Dict[str, Any]:
+    """
+    Classify emotion from an image file path.
+    Returns JSON: {"ok": True, "result": <classifier result>}
+    """
+    try:
+        res = classify_image(req.image_path)
+        return {"ok": True, "result": res}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Image classification failed: {e}")

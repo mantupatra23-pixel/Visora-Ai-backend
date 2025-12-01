@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  redis:
+    image: redis:7
+    restart: unless-stopped
+
+  v2a_worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.v2a_worker
+    runtime: nvidia
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    volumes:
+      - ./:/app
+    depends_on:
+      - redis

@@ -1,0 +1,14 @@
+services:
+  redis:
+    image: redis:7
+  s2m_worker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.s2m
+    runtime: nvidia
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    volumes:
+      - ./:/app
+    depends_on:
+      - redis

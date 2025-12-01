@@ -1,0 +1,22 @@
+{
+  "name": "long_sword",
+  "type": "weapon",
+  "category": "melee",
+  "model_path": "assets/models/long_sword.glb",
+  "scale": 1.0,
+  "attach_bone": "RightHand",
+  "physics": {
+    "mass": 3.2,
+    "drag": 0.2,
+    "angular_drag": 0.15
+  },
+  "damage": {
+    "slash": 45,
+    "pierce": 20,
+    "impact": 10
+  },
+  "effects": {
+    "swing_whoosh": true,
+    "spark_on_hit": true
+  }
+}
