@@ -1,0 +1,47 @@
+{
+  "anime_boy": {
+    "name": "Anime Boy",
+    "description": "Stylized anime boy — soft shading, big eyes, warm colors",
+    "example_prompt": "A stylized anime boy portrait, warm lighting, soft shading, detailed hair, golden eyes, studio portrait",
+    "sd_model": "runwayml/stable-diffusion-v1-5",
+    "lora": "lora/anime-boy-lora.safetensors",
+    "controlnet": null,
+    "notes": "Use anime-specific SD checkpoint or LoRA. Use higher CFG (7-9)."
+  },
+  "anime_girl": {
+    "name": "Anime Girl",
+    "description": "Stylized anime girl — cinematic lighting, vibrant color",
+    "example_prompt": "A stylized anime girl portrait, cinematic lighting, vibrant colors, detailed hair, soft skin texture",
+    "sd_model": "runwayml/stable-diffusion-v1-5",
+    "lora": "lora/anime-girl-lora.safetensors",
+    "controlnet": null,
+    "notes": "Use anime SD (or SDXL anime finetune) for best results."
+  },
+  "tiger_3d": {
+    "name": "Tiger 3D",
+    "description": "Semi-realistic tiger character with expressive eyes — cinematic studio lighting",
+    "example_prompt": "A semi-realistic tiger portrait with anthropomorphic expression, cinematic studio lighting, detailed fur, warm contrast",
+    "sd_model": "stabilityai/stable-diffusion-2-1",
+    "lora": "lora/tiger-lora.safetensors",
+    "controlnet": "controlnet/pose-tiger.cnet",
+    "notes": "Prefer SD2.1 or custom animal model; use ControlNet for pose/face landmarks."
+  },
+  "monkey_3d": {
+    "name": "Monkey 3D",
+    "description": "Cute monkey character, cartoon to semi-realistic depending on style",
+    "example_prompt": "Cute monkey portrait, slightly cartoonish, bright eyes, soft fur textures, studio lighting",
+    "sd_model": "runwayml/stable-diffusion-v1-5",
+    "lora": "lora/monkey-lora.safetensors",
+    "controlnet": null,
+    "notes": "Tune prompts to get anthropomorphic expressions."
+  },
+  "human_cartoon": {
+    "name": "Human Cartoon",
+    "description": "Cartoonized human avatar — friendly, simplified geometry",
+    "example_prompt": "Cartoonized human avatar, soft edges, friendly expression, studio portrait, 3D-look shading",
+    "sd_model": "runwayml/stable-diffusion-v1-5",
+    "lora": "lora/human-cartoon-lora.safetensors",
+    "controlnet": null,
+    "notes": "Good for YouTube-host avatars; use consistent LoRA for face consistency."
+  }
+}

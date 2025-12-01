@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Visora — Preview & Create</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial; margin:18px; background:#0f1724; color:#f8fafc}
+    .card{background:#0b1220;padding:14px;border-radius:10px;box-shadow:0 6px 18px rgba(0,0,0,0.6);max-width:960px;margin:12px auto}
+    textarea{width:100%;height:110px;padding:10px;border-radius:8px;border:1px solid #1f2937;background:#071027;color:#e6eef8}
+    input[type=text]{width:100%;padding:8px;border-radius:6px;border:1px solid #1f2937;background:#071027;color:#e6eef8}
+    button{background:#06b6d4;color:#042327;border:none;padding:10px 14px;border-radius:8px;font-weight:600;cursor:pointer}
+    .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px}
+    .thumb{width:30%;min-width:160px;background:#071024;padding:8px;border-radius:8px;border:1px solid #13303a;cursor:pointer}
+    .thumb img{width:100%;height:180px;object-fit:cover;border-radius:6px}
+    .thumb p{font-size:13px;color:#cbd5e1; margin:8px 0 0}
+    .selected{outline:3px solid #60a5fa; transform:translateY(-4px)}
+    .small{font-size:13px;color:#94a3b8}
+    .log{background:#020617;padding:10px;border-radius:8px;margin-top:12px;color:#cbd5e1;max-height:240px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Visora — Quick Preview</h2>
+    <div class="small">Script डालो — मैं तीन candidate images बनाकर दिखाऊँगा। Select करके final create करो।</div>
+
+    <div style="margin-top:12px">
+      <label class="small">API base (change if server remote):</label>
+      <input id="apiBase" type="text" value="http://127.0.0.1:8000" />
+    </div>
+
+    <div style="margin-top:12px">
+      <label class="small">Preset (optional, e.g. tiger_3d, anime_boy):</label>
+      <input id="preset" type="text" placeholder="optional preset key" />
+    </div>
+
+    <div style="margin-top:12px">
+      <label class="small">Script / Short (jo user dena chahta hai):</label>
+      <textarea id="script" placeholder="Type your 20-40 second short script here...">A heroic short about a tiger who climbs a stormy cliff to save its cub during sunset. Keep it punchy for 25 seconds.</textarea>
+    </div>
+
+    <div class="row" style="margin-top:12px;">
+      <button id="btnPreview">Preview (generate 3)</button>
+      <div style="flex:1"></div>
+      <button id="btnCreate" disabled>Create final (use selected)</button>
+    </div>
+
+    <div id="candidates" class="row" style="margin-top:14px"></div>
+
+    <div id="log" class="log" aria-live="polite"></div>
+  </div>
+
+<script>
+(async ()=>{
+
+  const apiBaseInput = document.getElementById('apiBase');
+  const btnPreview = document.getElementById('btnPreview');
+  const btnCreate = document.getElementById('btnCreate');
+  const candidatesDiv = document.getElementById('candidates');
+  const logDiv = document.getElementById('log');
+  const presetInput = document.getElementById('preset');
+  const scriptInput = document.getElementById('script');
+
+  let selectedCandidate = null;
+  let lastCandidates = [];
+
+  function log(msg){ const p=document.createElement('div'); p.textContent = (new Date()).toLocaleTimeString() + ' — ' + msg; logDiv.prepend(p); }
+
+  function apiUrl(path){ return (apiBaseInput.value.replace(/\/$/,'')) + path; }
+
+  function clearCandidates(){
+    candidatesDiv.innerHTML = '';
+    selectedCandidate = null;
+    btnCreate.disabled = true;
+  }
+
+  btnPreview.onclick = async () => {
+    clearCandidates();
+    log('Preview request sent...');
+    const payload = {
+      script_text: scriptInput.value,
+      preset_key: presetInput.value || null,
+      n: 3
+    };
+    try{
+      const res = await fetch(apiUrl('/character3d/preview/generate'), {
+        method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(payload)
+      });
+      if(!res.ok){ const t=await res.text(); throw new Error(t||res.status) }
+      const data = await res.json();
+      if(!data.ok){ throw new Error(JSON.stringify(data)) }
+      lastCandidates = data.candidates || [];
+      if(!lastCandidates.length){ log('No candidates returned'); return; }
+      log('Candidates received: ' + lastCandidates.length);
+      // render thumbnails
+      lastCandidates.forEach((c, idx)=>{
+        const div = document.createElement('div'); div.className='thumb';
+        const img = document.createElement('img');
+        // image path might be relative to server; make absolute
+        const imgUrl = (c.image && c.image.startsWith('http')) ? c.image : (apiBaseInput.value.replace(/\/$/,'') + '/' + c.image.replace(/^\.\//,''));
+        img.src = imgUrl + '?t=' + Date.now();
+        const p = document.createElement('p'); p.textContent = (c.prompt||'') .substring(0,140);
+        div.appendChild(img); div.appendChild(p);
+        div.onclick = ()=> {
+          // deselect others
+          Array.from(candidatesDiv.querySelectorAll('.thumb')).forEach(el=>el.classList.remove('selected'));
+          div.classList.add('selected');
+          selectedCandidate = {index: idx, data: c};
+          btnCreate.disabled = false;
+          log('Selected candidate #' + (idx+1));
+        };
+        candidatesDiv.appendChild(div);
+      });
+    }catch(err){
+      log('Preview failed: ' + err.message);
+      console.error(err);
+    }
+  };
+
+  btnCreate.onclick = async () => {
+    if(!selectedCandidate){ alert('Select a candidate first'); return; }
+    log('Triggering final create using selected candidate...');
+    // Prepare universe create payload
+    const sel = selectedCandidate.data;
+    // derive image path (server static path)
+    let imagePath = sel.image;
+    // if image path is relative (static/outputs/xxx), pass exactly that
+    // call /universe/create with prefer_upload=false and image_filename set
+    const payload = {
+      script_text: scriptInput.value,
+      preferred_preset: presetInput.value || null,
+      prefer_upload: false,
+      user_image_path: null,
+      extra_prompt: sel.prompt,
+      make_3d: true,
+      want_video: true,
+      voice_filename: null,
+      image_filename: imagePath && imagePath.split('/').pop(),
+      video_filename: null
+    };
+    try{
+      btnCreate.disabled = true;
+      const res = await fetch(apiUrl('/universe/create'), {
+        method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if(!res.ok){ throw new Error(JSON.stringify(data)) }
+      log('Universe created. Response summary: ' + JSON.stringify(data.summary || data.steps || data).slice(0,400));
+      if(data.summary && data.summary.final_video){
+        const vurl = apiBaseInput.value.replace(/\/$/,'') + '/' + data.summary.final_video.replace(/^\.\//,'');
+        log('Final video: ' + vurl);
+        // open video in new tab
+        window.open(vurl, '_blank');
+      } else {
+        log('No final_video in summary. Check steps for details.');
+      }
+    }catch(err){
+      log('Create failed: ' + (err.message||err));
+      console.error(err);
+      btnCreate.disabled = false;
+    }
+  };
+
+  // quick tip: enable CORS warning
+  log('UI ready. Set API base if server remote. Ensure FastAPI CORS allowed.');
+})();
+</script>
+</body>
+</html>
