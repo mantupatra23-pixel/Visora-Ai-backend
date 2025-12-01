@@ -1,0 +1,24 @@
+version: "3.8"
+services:
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+
+  worker-gpu:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.gpu
+    runtime: nvidia
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - CELERY_BROKER=redis://redis:6379/0
+      - VOICE_CLONE_CMD=${VOICE_CLONE_CMD:-}
+    depends_on:
+      - redis
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    volumes:
+      - ..:/home/app
