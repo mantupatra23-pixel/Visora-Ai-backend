@@ -1,0 +1,25 @@
+{
+  "job_id": "weather_test_01",
+  "created_at": 1700000000,
+  "preset": "rain_heavy",
+  "config": {
+    "type": "storm",
+    "intensity": 0.95,
+    "wetness": 0.9,
+    "flip_resolution": 64,
+    "flip_preset": "flip_medium",
+    "particle_size": 0.025,
+    "inflow_radius": 0.5,
+    "inflow_speed": 6.0
+  },
+  "scene_file": "scenes/street_scene.blend",
+  "frames": 240,
+  "export": "frames",
+  "features": {
+    "flip_fluid": true,
+    "flip_preset": "flip_medium",
+    "lightning_audio": true,
+    "puddles": true,
+    "transition": {"start_frame": 20, "duration": 120, "to_density": 0.8}
+  }
+}

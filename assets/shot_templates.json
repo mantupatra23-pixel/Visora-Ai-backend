@@ -1,0 +1,6 @@
+{
+  "establishing": {"type":"wide","duration_sec":3,"camera_move":"static"},
+  "dialogue_two_shot": {"type":"medium","duration_sec":4,"camera_move":"cut_between_oshots"},
+  "intense_close": {"type":"close_up","duration_sec":3,"camera_move":"slow_push,handheld"},
+  "action_sequence": {"type":"wide","duration_sec":6,"camera_move":"car_follow,tracking"}
+}

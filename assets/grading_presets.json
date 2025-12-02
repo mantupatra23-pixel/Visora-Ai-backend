@@ -1,0 +1,17 @@
+{
+  "hq_teal_orange": {
+    "name": "HQ Teal & Orange",
+    "lut": "assets/luts/hq_teal_orange.cube",
+    "skin_protect": true
+  },
+  "hq_filmic": {
+    "name": "HQ Filmic",
+    "lut": "assets/luts/hq_filmic.cube",
+    "skin_protect": true
+  },
+  "hq_warm": {
+    "name": "HQ Warm",
+    "lut": "assets/luts/hq_warm.cube",
+    "skin_protect": true
+  }
+}

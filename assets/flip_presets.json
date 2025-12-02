@@ -1,0 +1,29 @@
+{
+  "flip_low": {
+    "resolution": 32,
+    "domain_size": 12,
+    "inflow_radius": 0.35,
+    "inflow_speed": 5.0,
+    "cache_steps_per_frame": 1,
+    "cache_dir": "cache/flip_low",
+    "notes": "Quick test, low memory, coarse splashes"
+  },
+  "flip_medium": {
+    "resolution": 64,
+    "domain_size": 18,
+    "inflow_radius": 0.5,
+    "inflow_speed": 6.0,
+    "cache_steps_per_frame": 1,
+    "cache_dir": "cache/flip_medium",
+    "notes": "Balanced quality/speed"
+  },
+  "flip_high": {
+    "resolution": 128,
+    "domain_size": 24,
+    "inflow_radius": 0.8,
+    "inflow_speed": 8.0,
+    "cache_steps_per_frame": 2,
+    "cache_dir": "cache/flip_high",
+    "notes": "High quality splashes, heavy memory & time"
+  }
+}
