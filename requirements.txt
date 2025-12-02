@@ -119,7 +119,6 @@ huggingface-hub==0.20.3
 ###############################################
 
 face-alignment==1.3.5
-tqdm==4.71.0
 webrtcvad==2.0.11
 soundfile==0.12.1
 gdown==4.6.6
