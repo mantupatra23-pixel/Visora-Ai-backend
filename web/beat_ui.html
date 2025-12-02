@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Beat Visualizer</title></head>
+<body>
+<h2>Beat Visualizer (Visora)</h2>
+<input type="file" id="audiofile" accept="audio/*"/>
+<button id="upload">Upload & Analyze</button>
+<div id="status"></div>
+<audio id="player" controls></audio>
+<canvas id="wave" width="1000" height="200" style="border:1px solid #ccc"></canvas>
+<script>
+const uploadBtn = document.getElementById('upload');
+const fileInput = document.getElementById('audiofile');
+const status = document.getElementById('status');
+const player = document.getElementById('player');
+const canvas = document.getElementById('wave');
+const ctx = canvas.getContext('2d');
+
+uploadBtn.onclick = async () => {
+  if(!fileInput.files[0]) { alert('Choose file'); return; }
+  const f = fileInput.files[0];
+  const fd = new FormData();
+  fd.append('file', f);
+  status.innerText = 'Uploading...';
+  const up = await fetch('/beat/upload', {method:'POST', body:fd});
+  const j = await up.json();
+  if(!j.ok){ status.innerText = 'Upload failed'; return; }
+  status.innerText = 'Analyzing beats...';
+  const res = await fetch('/beat/analyze', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({path: j.path})});
+  const rj = await res.json();
+  if(!rj.ok){ status.innerText = 'Analysis failed: ' + (rj.error||JSON.stringify(rj)); return; }
+  status.innerText = 'BPM: ' + rj.bpm + ' — beats: ' + rj.beats.length;
+  player.src = j.path;
+  // draw markers on canvas when audio loads
+  player.onloadedmetadata = () => {
+    drawMarkers(rj.beats, player.duration);
+  }
+};
+
+function drawMarkers(beats, duration){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // simple background
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  // draw beat lines
+  ctx.strokeStyle = '#ffcc00';
+  for(let b of beats){
+    const x = (b / duration) * canvas.width;
+    ctx.beginPath();
+    ctx.moveTo(x,0);
+    ctx.lineTo(x,canvas.height);
+    ctx.stroke();
+  }
+  ctx.fillStyle = '#fff';
+  ctx.fillText('Beat markers (yellow). Duration: ' + duration.toFixed(2) + 's', 10, 14);
+}
+</script>
+</body>
+</html>
