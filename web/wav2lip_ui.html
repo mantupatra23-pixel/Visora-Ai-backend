@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Wav2Lip Admin</title>
+  <style>
+    body{font-family: Arial; max-width:900px;margin:30px auto}
+    input,select,button{padding:8px;margin:6px 0;width:100%}
+    .row{display:flex;gap:12px}
+    .col{flex:1}
+    pre{background:#f5f5f5;padding:12px;border-radius:6px;max-height:300px;overflow:auto}
+  </style>
+</head>
+<body>
+  <h2>Wav2Lip Admin</h2>
+  <p>Server-side paths (video/audio) must be accessible to backend.</p>
+
+  <label>Video path (server):</label>
+  <input id="video" placeholder="/path/to/face_video.mp4" />
+
+  <label>Audio path (server, optional):</label>
+  <input id="audio" placeholder="/path/to/new_audio.wav" />
+
+  <label>Use GAN model?</label>
+  <select id="use_gan"><option value="false">No</option><option value="true">Yes</option></select>
+
+  <label>Consent (must be true):</label>
+  <select id="consent"><option value="false">No</option><option value="true">Yes</option></select>
+
+  <button id="submit">Submit Job</button>
+
+  <h3>Response</h3>
+  <pre id="resp">--</pre>
+
+  <script>
+    const apiBase = window.location.origin + "/api"; // app includes router under /api
+    document.getElementById("submit").onclick = async () => {
+      const video = document.getElementById("video").value.trim();
+      const audio = document.getElementById("audio").value.trim() || null;
+      const use_gan = document.getElementById("use_gan").value === "true";
+      const consent = document.getElementById("consent").value === "true";
+      if (!video) { alert("Enter video path"); return; }
+      const payload = { video, audio, use_gan, consent };
+      document.getElementById("resp").textContent = "Submitting...";
+      try {
+        const res = await fetch(apiBase + "/wav2lip/submit", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const j = await res.json();
+        document.getElementById("resp").textContent = JSON.stringify(j, null, 2);
+      } catch (e) {
+        document.getElementById("resp").textContent = "Error: " + e.message;
+      }
+    }
+  </script>
+</body>
+</html>
